@@ -1,0 +1,9 @@
+<div class="card flex justify-content-center">
+  <p-menu [model]="itemsMenu" class="sideBar-menu">
+    <ng-template let-item pTemplate="item">
+      <a [routerLink]="item.routerLink" routerLinkActive="active">{{
+        item.label
+      }}</a>
+    </ng-template>
+  </p-menu>
+</div>

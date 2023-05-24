@@ -1,0 +1,23 @@
+<div class="card">
+  <p-table [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nome</th>
+        <th>Uni. Medida</th>
+        <th>Qtda.</th>
+        <th>Preço</th>
+        <th>Produto Perecícel</th>
+        <th>Dta. Validade</th>
+        <th>Dta. Fabricação</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.code }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.quantity }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
