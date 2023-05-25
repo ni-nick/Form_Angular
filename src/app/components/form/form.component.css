@@ -1,0 +1,28 @@
+:host ::ng-deep .flex {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+  row-gap: 2px;
+}
+
+.error-message {
+  font-size: 13px;
+  color: red;
+}
+
+.required-marker {
+  font-size: 15px;
+  color: red;
+}
+
+.headerButtonsForm {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px 0 10px 0;
+}
+
+:host ::ng-deep .cancelButton button {
+  background-color: #fff;
+  color: #3b82f6;
+}

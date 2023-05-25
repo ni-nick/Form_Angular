@@ -17,6 +17,8 @@ import { FormComponent } from './components/form/form.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,9 @@ import { CalendarModule } from 'primeng/calendar';
     InputTextModule,
     InputNumberModule,
     CalendarModule,
+    CheckboxModule,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

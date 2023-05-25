@@ -13,7 +13,6 @@ body {
 }
 
 .container {
-  background: aqua;
   margin-left: 220px;
   height: 100vh;
   margin-right: 20px;
@@ -28,7 +27,7 @@ body {
 }
 
 .p-button {
-  height: 40px;
+  height: 35px;
 }
 
 .p-inputtext {
