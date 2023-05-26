@@ -26,3 +26,7 @@
   background-color: #fff;
   color: #3b82f6;
 }
+
+:host ::ng-deep .hiden-input{
+  display: none;
+}

@@ -1,85 +1,54 @@
 <div class="headerButtonsForm">
-  <p-button
-    label="Cancelar"
-    class="cancelButton"
-    routerLink="/Listar"
-  ></p-button>
+  <p-button label="Cancelar" class="cancelButton" routerLink="/Listar"></p-button>
   <p-button type="submit" (click)="saveForm()" label="Enviar"></p-button>
 </div>
 
 <div [formGroup]="form" class="card flex justify-content-center">
+  <!-- inputs em tela -->
+  <div class="flex flex-column gap-2 hiden-input">
+    <input pInputText formControlName="id" />
+  </div>
+
   <div class="flex flex-column gap-2">
     <label htmlFor="itemName">
-      <span class="required-marker">*</span>Nome do Item</label
-    >
+    <span class="required-marker">*</span>Nome do Item</label>
     <input pInputText formControlName="itemName" />
-    <div
-      *ngIf="form.get('itemName')?.invalid && form.get('itemName')?.touched"
-      class="error-message"
-    >
+    <div *ngIf="form.get('itemName')?.invalid && form.get('itemName')?.touched" class="error-message">
       Campo obrigatório
     </div>
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="unitOfMeasurement">
-      <span class="required-marker">*</span>Uni. de Medida</label
-    >
-    <input pInputText type="number" formControlName="unitOfMeasurement" />
-    <div
-      *ngIf="
-        form.get('unitOfMeasurement')?.invalid &&
-        form.get('unitOfMeasurement')?.touched
-      "
-      class="error-message"
-    >
-      Campo obrigatório
-    </div>
+      <span class="required-marker">*</span>Uni. de Medida</label>
+      <input pInputText type="number" formControlName="unitOfMeasurement" />
+      <div *ngIf="form.get('unitOfMeasurement')?.invalid && form.get('unitOfMeasurement')?.touched" class="error-message">
+        Campo obrigatório
+      </div>
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="quantity">Quantidade</label>
     <input pInputText type="number" formControlName="quantity" />
-    <div
-      *ngIf="form.get('quantity')?.invalid && form.get('quantity')?.touched"
-      class="error-message"
-    >
+    <div *ngIf="form.get('quantity')?.invalid && form.get('quantity')?.touched" class="error-message">
       Campo obrigatório
     </div>
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="price">
-      <span class="required-marker">*</span>
-      Preço</label
-    >
-    <p-inputMask
-      ngModel
-      mask="R$ 9999.99"
-      [slotChar]="'0'"
-      placeholder="0.00"
-      formControlName="price"
-    ></p-inputMask>
-    <div
-      *ngIf="form.get('price')?.invalid && form.get('price')?.touched"
-      class="error-message"
-    >
+    <span class="required-marker">*</span>Preço</label>
+    <p-inputMask ngModel mask="R$ 9999.99" [slotChar]="'0'" placeholder="0.00" formControlName="price"></p-inputMask>
+    <div *ngIf="form.get('price')?.invalid && form.get('price')?.touched" class="error-message">
       Campo obrigatório
     </div>
   </div>
 
   <div class="flex flex-column gap-2">
-    <label htmlFor="perishableProduct"
-      ><span class="required-marker">*</span>Produto Perecível</label
-    >
+    <label htmlFor="perishableProduct">
+    <span class="required-marker">*</span>Produto Perecível</label>
     <p-checkbox [binary]="true"></p-checkbox>
-    <div
-      *ngIf="
-        form.get('perishableProduct')?.invalid &&
-        form.get('perishableProduct')?.touched
-      "
-      class="error-message"
-    >
+    <div *ngIf="form.get('perishableProduct')?.invalid && form.get('perishableProduct')?.touched" class="error-message">
       Campo obrigatório
     </div>
   </div>
@@ -87,31 +56,19 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="expirationDate">Data Validade</label>
     <p-calendar formControlName="expirationDate"></p-calendar>
-    <div
-      *ngIf="
-        form.get('perishableProduct')?.value &&
-        form.get('expirationDate')?.invalid &&
-        form.get('expirationDate')?.touched
-      "
-      class="error-message"
-    >
-      Campo obrigatório
+    <div *ngIf="form.get('perishableProduct')?.value && form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched"
+      class="error-message">
+        Campo obrigatório
     </div>
   </div>
 
   <div class="flex flex-column gap-2">
-    <label htmlFor="manufacturingDate"
-      ><span class="required-marker">*</span>Data Fabricação</label
-    >
+    <label htmlFor="manufacturingDate">
+    <span class="required-marker">*</span>Data Fabricação</label>
     <p-calendar formControlName="manufacturingDate"></p-calendar>
-    <div
-      *ngIf="
-        form.get('manufacturingDate')?.invalid &&
-        form.get('manufacturingDate')?.touched
-      "
-      class="error-message"
-    >
+    <div *ngIf="form.get('manufacturingDate')?.invalid && form.get('manufacturingDate')?.touched" class="error-message">
       Campo obrigatório
     </div>
   </div>
+
 </div>

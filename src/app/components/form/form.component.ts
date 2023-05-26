@@ -17,6 +17,7 @@ export class FormComponent {
 
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
+      id:[''],
       itemName: ['', Validators.required],
       unitOfMeasurement: ['', Validators.required],
       quantity: [''],
@@ -27,13 +28,21 @@ export class FormComponent {
     });
   }
 
-  saveForm() {
+  public saveForm() {
     if (this.form.valid) {
       const data = this.form.value;
 
+      let count = localStorage.getItem('contador');
       const existingData = localStorage.getItem('registros');
       const records = existingData ? JSON.parse(existingData) : [];
 
+      if (!count) {
+        count = '0';
+      }
+
+      const newCount = parseInt(count) + 1;
+
+      data.id = newCount;
       records.push(data);
 
       localStorage.setItem('registros', JSON.stringify(records));
