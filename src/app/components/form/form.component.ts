@@ -29,8 +29,15 @@ export class FormComponent {
 
   saveForm() {
     if (this.form.valid) {
-      const values = this.form.value;
-      console.log(values);
+      const data = this.form.value;
+
+      const existingData = localStorage.getItem('registros');
+      const records = existingData ? JSON.parse(existingData) : [];
+
+      records.push(data);
+
+      localStorage.setItem('registros', JSON.stringify(records));
+      this.form.reset();
     } else {
       // verifica se os campos obrigatórios estão preenchidos
       this.form.markAllAsTouched();
