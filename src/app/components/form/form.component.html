@@ -3,16 +3,20 @@
   <p-button type="submit" (click)="saveForm()" label="Enviar"></p-button>
 </div>
 
-<div [formGroup]="form" class="card flex justify-content-center">
+<form [formGroup]="form" class="card flex justify-content-center">
   <!-- inputs em tela -->
   <div class="flex flex-column gap-2 hiden-input">
-    <input pInputText formControlName="id" />
+    <input #idFormInput pInputText inputId="id" formControlName="id" />
+  </div>
+
+  <div class="flex flex-column gap-2 hiden-input">
+    <input #deleteDateFormInput pInputText inputId="deleteDate"  formControlName="deleteDate" />
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="itemName">
     <span class="required-marker">*</span>Nome do Item</label>
-    <input pInputText formControlName="itemName" />
+    <input #itemNameFormInput pInputText inputId="itemName" formControlName="itemName" name="itemName" [maxlength]="50"/>
     <div *ngIf="form.get('itemName')?.invalid && form.get('itemName')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -21,7 +25,8 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="unitOfMeasurement">
       <span class="required-marker">*</span>Uni. de Medida</label>
-      <input pInputText type="number" formControlName="unitOfMeasurement" />
+      <p-dropdown #unitOfMeasurementFormInput inputId="unitOfMeasurement" [options]="unitsOfMeasurement" optionLabel="name"
+          formControlName="unitOfMeasurement"></p-dropdown>
       <div *ngIf="form.get('unitOfMeasurement')?.invalid && form.get('unitOfMeasurement')?.touched" class="error-message">
         Campo obrigatório
       </div>
@@ -29,7 +34,7 @@
 
   <div class="flex flex-column gap-2">
     <label htmlFor="quantity">Quantidade</label>
-    <input pInputText type="number" formControlName="quantity" />
+    <input #quantityFormInput inputId="quantity" pInputText type="number" formControlName="quantity"/>
     <div *ngIf="form.get('quantity')?.invalid && form.get('quantity')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -55,7 +60,8 @@
 
   <div class="flex flex-column gap-2">
     <label htmlFor="expirationDate">Data Validade</label>
-    <p-calendar formControlName="expirationDate"></p-calendar>
+    <p-calendar #expirationDateFormInput inputId="expirationDate" formControlName="expirationDate" name="expirationDate"
+        [showIcon]="true"></p-calendar>
     <div *ngIf="form.get('perishableProduct')?.value && form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched"
       class="error-message">
         Campo obrigatório
@@ -65,10 +71,11 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="manufacturingDate">
     <span class="required-marker">*</span>Data Fabricação</label>
-    <p-calendar formControlName="manufacturingDate"></p-calendar>
+    <p-calendar formControlName="manufacturingDate" #manufacturingDateFormInput inputId="manufacturingDate" name="manufacturingDate"
+        [showIcon]="true"></p-calendar>
     <div *ngIf="form.get('manufacturingDate')?.invalid && form.get('manufacturingDate')?.touched" class="error-message">
       Campo obrigatório
     </div>
   </div>
 
-</div>
+</form>
