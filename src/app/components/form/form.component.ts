@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {FormGroup, FormBuilder, Validators,
-AbstractControl,ValidationErrors} from '@angular/forms';
+import {FormGroup, FormBuilder, Validators, AbstractControl,ValidationErrors} from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import * as moment from 'moment';
 
 interface UnitOfMeasurementOptions {
@@ -16,8 +16,11 @@ interface UnitOfMeasurementOptions {
 })
 
 export class FormComponent implements OnInit{
+  @ViewChild('unitOfMeasurementFormInput', { static: false })
+  unitOfMeasurementFormInput!: ElementRef;
+
   form: FormGroup;
-  unitsOfMeasurement: UnitOfMeasurementOptions[] = [];
+  unitsOfMeasurementOption: UnitOfMeasurementOptions[] = [];
 
   urlId: number = 0;
 
@@ -31,15 +34,7 @@ export class FormComponent implements OnInit{
   manufacturingDate: string = '';
   deleteDate : string = '';
 
-  ngOnInit() {
-      this.unitsOfMeasurement = [
-        { name: 'Litro', value: 'lt' },
-        { name: 'Quilograma', value: 'kg' },
-        { name: 'Unidade', value: 'uni' },
-    ];
-  }
-
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute) {
+  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private messageService: MessageService) {
     this.form = this.formBuilder.group({
       id:[''],
       itemName: ['', Validators.required],
@@ -56,6 +51,14 @@ export class FormComponent implements OnInit{
       this.urlId = id;
       this.loadItemData(id);
     });
+  }
+
+  ngOnInit() {
+    this.unitsOfMeasurementOption = [
+      { name: 'Litro', value: 'lt' },
+      { name: 'Quilograma', value: 'kg' },
+      { name: 'Unidade', value: 'uni' },
+    ];
   }
 
   public loadItemData(id: any) {
@@ -76,6 +79,11 @@ export class FormComponent implements OnInit{
     }
   }
 
+  public onChangeUnitOfMeasurement(){
+   const valor = this.unitOfMeasurementFormInput.nativeElement.value;
+    console.log(valor);
+  }
+
   public saveForm() {
     if(this.form.valid){
       const data = this.form.value;
@@ -89,7 +97,7 @@ export class FormComponent implements OnInit{
 
         records[existingItemIndex] = data;
         localStorage.setItem('registros', JSON.stringify(records));
-
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!' });
       }else{
         let count = localStorage.getItem('contador');
         if (!count) {
@@ -107,6 +115,7 @@ export class FormComponent implements OnInit{
 
         localStorage.setItem('registros', JSON.stringify(records));
         localStorage.setItem('contador', JSON.stringify(newCount));
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro adicionado com sucesso!' });
         this.form.reset();
       }
     } else {

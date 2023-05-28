@@ -16,11 +16,15 @@ import { TableItemsComponent } from './components/table-items/table-items.compon
 import { FormComponent } from './components/form/form.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { CalendarModule } from 'primeng/calendar';
+import { CalendarModule, LocaleSettings } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputMaskModule } from 'primeng/inputmask';
 import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
+
 
 @NgModule({
   declarations: [
@@ -42,12 +46,13 @@ import { DropdownModule } from 'primeng/dropdown';
     InputNumberModule,
     CalendarModule,
     CheckboxModule,
-    ReactiveFormsModule,
     FormsModule,
+    ReactiveFormsModule,
     InputMaskModule,
     DropdownModule,
+    ToastModule,
   ],
-  providers: [],
+  providers: [MessageService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

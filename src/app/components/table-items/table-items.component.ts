@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import * as moment from 'moment';
 
 @Component({
@@ -8,6 +9,8 @@ import * as moment from 'moment';
 })
 export class TableItemsComponent implements OnInit {
   records: any[] = [];
+
+  constructor(private messageService: MessageService) { }
 
   ngOnInit() {
     const recordsLocalStorage = localStorage.getItem('registros');
@@ -24,21 +27,26 @@ export class TableItemsComponent implements OnInit {
   }
 
   public deleteItem(item: any ){
-    item.deleteDate = moment(new Date()).format('DD/MM/YYYY');
-    const localstorage = localStorage.getItem('registros');
-    const itemsFromLocalStorage = localstorage ? JSON.parse(localstorage) : [];
+    const confirmed = confirm('Tem certeza que deseja excluir o registro?');
 
-    let updatedItems = itemsFromLocalStorage.map((existingItem: any) => {
-      if (existingItem.id === item.id) {
-        return item;
-      }
-      return existingItem;
-    });
+    if(confirmed){
+      item.deleteDate = moment(new Date()).format('DD/MM/YYYY');
+      const localstorage = localStorage.getItem('registros');
+      const itemsFromLocalStorage = localstorage ? JSON.parse(localstorage) : [];
 
-    localStorage.setItem('registros', JSON.stringify(updatedItems));
+      let updatedItems = itemsFromLocalStorage.map((existingItem: any) => {
+        if (existingItem.id === item.id) {
+          return item;
+        }
+        return existingItem;
+      });
 
-    updatedItems = this.convertToString(updatedItems);
-    this.records = updatedItems.filter((item: any) => !item.deleteDate);
+      localStorage.setItem('registros', JSON.stringify(updatedItems));
+
+      updatedItems = this.convertToString(updatedItems);
+      this.records = updatedItems.filter((item: any) => !item.deleteDate);
+      this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro excluído com sucesso!' });
+    }
   }
 
   public convertToString(convertToObject: any){

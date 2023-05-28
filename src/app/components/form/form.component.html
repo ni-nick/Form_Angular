@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="headerButtonsForm">
   <p-button label="Cancelar" class="cancelButton" routerLink="/Listar"></p-button>
   <p-button type="submit" (click)="saveForm()" label="Salvar"></p-button>
@@ -26,8 +27,8 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="unitOfMeasurement">
       <span class="required-marker">*</span>Uni. de Medida</label>
-      <p-dropdown inputId="unitOfMeasurement" [options]="unitsOfMeasurement" optionLabel="name"
-          formControlName="unitOfMeasurement" [(ngModel)]="unitOfMeasurement"></p-dropdown>
+      <p-dropdown #unitOfMeasurementFormInput inputId="unitOfMeasurement" [options]="unitsOfMeasurementOption" optionLabel="name"
+          formControlName="unitOfMeasurement" [(ngModel)]="unitOfMeasurement" onChange="onChangeUnitOfMeasurement"></p-dropdown>
       <div *ngIf="form.get('unitOfMeasurement')?.invalid && form.get('unitOfMeasurement')?.touched" class="error-message">
         Campo obrigatório
       </div>
