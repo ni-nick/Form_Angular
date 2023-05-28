@@ -6,6 +6,7 @@ import { ItemsRegisterComponent } from './pages/items-register/items-register.co
 const routes: Routes = [
   { path: 'Listar', component: ItemsListComponent },
   { path: 'Cadastrar', component: ItemsRegisterComponent },
+  { path: 'Editar/:id', component: ItemsRegisterComponent },
 ];
 
 @NgModule({
