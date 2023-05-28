@@ -79,10 +79,11 @@ export class FormComponent implements OnInit{
     }
   }
 
-  public onChangeUnitOfMeasurement(){
-   const valor = this.unitOfMeasurementFormInput.nativeElement.value;
-    console.log(valor);
-  }
+  // public formatarNumero() {
+  //   this.quantity = Number(this.quantity.toFixed(3)); // Defina o número de casas decimais desejado
+
+  //   console.log(this.quantity)
+  // }
 
   public saveForm() {
     if(this.form.valid){

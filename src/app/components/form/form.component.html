@@ -36,7 +36,7 @@
 
   <div class="flex flex-column gap-2">
     <label htmlFor="quantity">Quantidade</label>
-    <input inputId="quantity" pInputText type="number" formControlName="quantity" [(ngModel)]="quantity"/>
+    <input inputId="quantity" pInputText type="number" formControlName="quantity" [(ngModel)]="quantity" pInputMask="9*.999" />
     <div *ngIf="form.get('quantity')?.invalid && form.get('quantity')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -45,7 +45,7 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="price">
     <span class="required-marker">*</span>Preço</label>
-    <p-inputMask mask="R$ 9999.99" [slotChar]="'0'" placeholder="0.00" formControlName="price" [(ngModel)]="price"></p-inputMask>
+    <p-inputMask mask="R$ 99999.99" placeholder="0.00" [slotChar]="'0'" formControlName="price" [(ngModel)]="price" ng2-mask="currency"></p-inputMask>
     <div *ngIf="form.get('price')?.invalid && form.get('price')?.touched" class="error-message">
       Campo obrigatório
     </div>
