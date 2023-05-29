@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {FormGroup, FormBuilder, Validators, AbstractControl,ValidationErrors} from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -16,13 +16,12 @@ interface UnitOfMeasurementOptions {
 })
 
 export class FormComponent implements OnInit{
-  @ViewChild('unitOfMeasurementFormInput', { static: false })
-  unitOfMeasurementFormInput!: ElementRef;
-
   form: FormGroup;
   unitsOfMeasurementOption: UnitOfMeasurementOptions[] = [];
 
   urlId: number = 0;
+  productOutOfDate: boolean = false;
+  manufacturingDateInvalid: boolean = false;
 
   id: number = 0;
   itemName: string = '';
@@ -34,25 +33,6 @@ export class FormComponent implements OnInit{
   manufacturingDate: string = '';
   deleteDate : string = '';
 
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private messageService: MessageService) {
-    this.form = this.formBuilder.group({
-      id:[''],
-      itemName: ['', Validators.required],
-      unitOfMeasurement: ['', Validators.required],
-      quantity: [''],
-      price: ['', Validators.required],
-      perishableProduct: [false, Validators.required],
-      expirationDate: ['', validatorExpirationDate],
-      manufacturingDate: ['', Validators.required],
-    });
-
-    this.route.params.subscribe(params => {
-      const id = params['id']; // Obtém o ID da URL
-      this.urlId = id;
-      this.loadItemData(id);
-    });
-  }
-
   ngOnInit() {
     this.unitsOfMeasurementOption = [
       { name: 'Litro', value: 'lt' },
@@ -61,7 +41,39 @@ export class FormComponent implements OnInit{
     ];
   }
 
-  public loadItemData(id: any) {
+  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private messageService: MessageService) {
+    this.form = this.formBuilder.group({
+      id:[''],
+      itemName: ['', Validators.required],
+      unitOfMeasurement: ['', Validators.required],
+      quantity: [''],
+      price: ['', Validators.required],
+      perishableProduct: [false, Validators.required],
+      expirationDate: ['', Validators.required],
+      manufacturingDate: ['', Validators.required],
+    });
+
+    this.form.get('perishableProduct')?.valueChanges.subscribe((value) => {
+      this.perishableProduct = value;
+      // Defina a validação obrigatória para a data de validade com base no valor do campo "produto perecível"
+      if (this.perishableProduct) {
+        this.form.get('expirationDate')?.setValidators(Validators.required);
+      } else {
+        this.form.get('expirationDate')?.clearValidators();
+      }
+
+      // Atualize as validações do campo "data de validade"
+      this.form.get('expirationDate')?.updateValueAndValidity();
+    });
+
+    this.route.params.subscribe(params => {
+      const id = params['id']; // Obtém o ID da URL
+      this.urlId = id;
+      this.loadItemDataEdit(id);
+    });
+  }
+
+  public loadItemDataEdit(id: any) {
     const itenslocalStorage = localStorage.getItem('registros');
     const convertToJson = itenslocalStorage ? JSON.parse(itenslocalStorage) : [];
     const selectedItem = convertToJson.find((item: any) => item.id === parseInt(id, 10));
@@ -79,12 +91,6 @@ export class FormComponent implements OnInit{
     }
   }
 
-  // public formatarNumero() {
-  //   this.quantity = Number(this.quantity.toFixed(3)); // Defina o número de casas decimais desejado
-
-  //   console.log(this.quantity)
-  // }
-
   public saveForm() {
     if(this.form.valid){
       const data = this.form.value;
@@ -99,7 +105,8 @@ export class FormComponent implements OnInit{
         records[existingItemIndex] = data;
         localStorage.setItem('registros', JSON.stringify(records));
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!' });
-      }else{
+
+      }else {
         let count = localStorage.getItem('contador');
         if (!count) {
           count = '0';
@@ -125,17 +132,28 @@ export class FormComponent implements OnInit{
     }
   }
 
-}
+  public onDateSelect(event: Date,  nameField: string) {
+    if(nameField === 'expirationDate'){
+      const selectedDate = moment(event);
+      const currentDate = moment();
+      this.productOutOfDate = selectedDate.isBefore(currentDate);
+      console.log(this.productOutOfDate)
+    }
 
-export function validatorExpirationDate(
-  control: AbstractControl
-): ValidationErrors | null {
-  const perishableProduct = control.get('perishableProduct')?.value;
-  const expirationDate = control.get('expirationDate')?.value;
-
-  if (perishableProduct && !expirationDate) {
-    return { required: true };
+    if (this.form.get('perishableProduct')?.value && this.productOutOfDate) {
+      this.checkManufacturingDate();
+    }
   }
 
-  return null;
+  public checkManufacturingDate() {
+    if (this.manufacturingDate) {
+      const manufacturingDate = moment(this.manufacturingDate).startOf('day');
+      if (manufacturingDate.isAfter(moment(this.expirationDate).startOf('day'))) {
+        this.manufacturingDateInvalid = true;
+      } else {
+        this.manufacturingDateInvalid = false;
+      }
+    }
+  }
+
 }

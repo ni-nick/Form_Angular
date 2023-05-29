@@ -33,6 +33,7 @@ body {
 .p-inputtext {
   height: 35px;
   padding: 5px 10px 5px 10px;
+  width: 45%;
 }
 
 .p-tooltip-text{
@@ -42,3 +43,8 @@ body {
 .p-datatable .p-datatable-thead > tr > th, .p-datatable .p-datatable-tbody > tr > td{
   text-align: center !important;
 }
+
+.p-dropdown, .p-calendar{
+  width: 45%;
+}
+

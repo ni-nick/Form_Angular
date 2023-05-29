@@ -28,7 +28,7 @@
     <label htmlFor="unitOfMeasurement">
       <span class="required-marker">*</span>Uni. de Medida</label>
       <p-dropdown #unitOfMeasurementFormInput inputId="unitOfMeasurement" [options]="unitsOfMeasurementOption" optionLabel="name"
-          formControlName="unitOfMeasurement" [(ngModel)]="unitOfMeasurement" onChange="onChangeUnitOfMeasurement"></p-dropdown>
+          formControlName="unitOfMeasurement" [(ngModel)]="unitOfMeasurement" placeholder="Selecione"></p-dropdown>
       <div *ngIf="form.get('unitOfMeasurement')?.invalid && form.get('unitOfMeasurement')?.touched" class="error-message">
         Campo obrigatório
       </div>
@@ -36,7 +36,36 @@
 
   <div class="flex flex-column gap-2">
     <label htmlFor="quantity">Quantidade</label>
-    <input inputId="quantity" pInputText type="number" formControlName="quantity" [(ngModel)]="quantity" pInputMask="9*.999" />
+
+     <div [ngSwitch]="unitOfMeasurement.value">
+      <div *ngSwitchCase="'lt'">
+        <div class="ui-inputgroup">
+          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" [(ngModel)]="quantity" >
+          <span class="ui-inputgroup-addon">Lt.</span>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'kg'">
+        <div class="ui-inputgroup">
+          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" [(ngModel)]="quantity" />
+          <span class="ui-inputgroup-addon">Kg.</span>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'uni'">
+        <div class="ui-inputgroup">
+          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" [(ngModel)]="quantity" pattern="[0-9]*">
+          <span class="ui-inputgroup-addon">Uni.</span>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="''">
+        <div class="ui-inputgroup">
+          <input inputId="quantity" pInputText type="number" formControlName="quantity" [(ngModel)]="quantity" />
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="form.get('quantity')?.invalid && form.get('quantity')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -64,20 +93,24 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="expirationDate">Data Validade</label>
     <p-calendar inputId="expirationDate" formControlName="expirationDate" name="expirationDate"
-        [showIcon]="true" [(ngModel)]="expirationDate" dateFormat="dd/mm/yy"></p-calendar>
+        [showIcon]="true" [(ngModel)]="expirationDate" dateFormat="dd/mm/yy" (onSelect)="onDateSelect($event, 'expirationDate')"></p-calendar>
     <div *ngIf="form.get('perishableProduct')?.value && form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched"
       class="error-message">
         Campo obrigatório
     </div>
+    <div *ngIf="productOutOfDate" class="error-message" class="error-message">Produto fora da validade</div>
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="manufacturingDate">
     <span class="required-marker">*</span>Data Fabricação</label>
     <p-calendar formControlName="manufacturingDate" inputId="manufacturingDate" name="manufacturingDate"
-        [showIcon]="true" [(ngModel)]="manufacturingDate" dateFormat="dd/mm/yy"></p-calendar>
+        [showIcon]="true" [(ngModel)]="manufacturingDate" dateFormat="dd/mm/yy" (onSelect)="onDateSelect($event, 'manufacturingDateControl')"></p-calendar>
     <div *ngIf="form.get('manufacturingDate')?.invalid && form.get('manufacturingDate')?.touched" class="error-message">
       Campo obrigatório
+    </div>
+    <div *ngIf="productOutOfDate && manufacturingDateInvalid" class="error-message">
+      Data de fabricação inválida
     </div>
   </div>
 
