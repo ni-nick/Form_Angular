@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {FormGroup, FormBuilder, Validators, AbstractControl,ValidationErrors} from '@angular/forms';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import * as moment from 'moment';
 
@@ -97,16 +97,7 @@ export class FormComponent implements OnInit{
       const existingData = localStorage.getItem('registros');
       const records = existingData ? JSON.parse(existingData) : [];
 
-      if(this.urlId){
-        console.log(data)
-        const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
-        console.log(existingItemIndex)
-
-        records[existingItemIndex] = data;
-        localStorage.setItem('registros', JSON.stringify(records));
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!' });
-
-      }else {
+      if(!this.urlId){
         let count = localStorage.getItem('contador');
         if (!count) {
           count = '0';
@@ -123,9 +114,20 @@ export class FormComponent implements OnInit{
 
         localStorage.setItem('registros', JSON.stringify(records));
         localStorage.setItem('contador', JSON.stringify(newCount));
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro adicionado com sucesso!' });
         this.form.reset();
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro adicionado com sucesso!' });
       }
+
+      if(this.urlId){
+        console.log(data)
+        const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
+        console.log(existingItemIndex)
+
+        records[existingItemIndex] = data;
+        localStorage.setItem('registros', JSON.stringify(records));
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!' });
+      }
+
     } else {
       // verifica se os campos obrigatórios estão preenchidos
       this.form.markAllAsTouched();

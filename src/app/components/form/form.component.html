@@ -26,7 +26,7 @@
 
   <div class="flex flex-column gap-2">
     <label htmlFor="unitOfMeasurement">
-      <span class="required-marker">*</span>Uni. de Medida</label>
+      <span class="required-marker">*</span>Unidade de Medida</label>
       <p-dropdown #unitOfMeasurementFormInput inputId="unitOfMeasurement" [options]="unitsOfMeasurementOption" optionLabel="name"
           formControlName="unitOfMeasurement" [(ngModel)]="unitOfMeasurement" placeholder="Selecione"></p-dropdown>
       <div *ngIf="form.get('unitOfMeasurement')?.invalid && form.get('unitOfMeasurement')?.touched" class="error-message">
