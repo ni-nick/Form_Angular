@@ -4,6 +4,7 @@ import { ItemsListComponent } from './pages/items-list/items-list.component';
 import { ItemsRegisterComponent } from './pages/items-register/items-register.component';
 
 const routes: Routes = [
+  { path: '', component: ItemsListComponent },
   { path: 'Listar', component: ItemsListComponent },
   { path: 'Cadastrar', component: ItemsRegisterComponent },
   { path: 'Editar/:id', component: ItemsRegisterComponent },

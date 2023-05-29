@@ -7,18 +7,17 @@
 <form [formGroup]="form" class="card flex justify-content-center">
   <!-- inputs em tela -->
   <div class="flex flex-column gap-2 hiden-input">
-    <input pInputText inputId="id" formControlName="id" [(ngModel)]="id"/>
+    <input pInputText inputId="id" formControlName="id"/>
   </div>
 
   <div class="flex flex-column gap-2 hiden-input">
-    <input pInputText inputId="deleteDate" formControlName="deleteDate" [(ngModel)]="deleteDate"/>
+    <input pInputText inputId="deleteDate" formControlName="deleteDate"/>
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="itemName">
     <span class="required-marker">*</span>Nome do Item</label>
-    <input pInputText inputId="itemName" formControlName="itemName" name="itemName" [maxlength]="50"
-      [(ngModel)]="itemName"/>
+    <input pInputText inputId="itemName" formControlName="itemName" name="itemName" [maxlength]="50"/>
     <div *ngIf="form.get('itemName')?.invalid && form.get('itemName')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -27,8 +26,8 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="unitOfMeasurement">
       <span class="required-marker">*</span>Unidade de Medida</label>
-      <p-dropdown #unitOfMeasurementFormInput inputId="unitOfMeasurement" [options]="unitsOfMeasurementOption" optionLabel="name"
-          formControlName="unitOfMeasurement" [(ngModel)]="unitOfMeasurement" placeholder="Selecione"></p-dropdown>
+      <p-dropdown inputId="unitOfMeasurement" [options]="unitsOfMeasurementOption" optionLabel="name"
+          formControlName="unitOfMeasurement" placeholder="Selecione" name="unitOfMeasurement" [(ngModel)]="unitOfMeasurement"></p-dropdown>
       <div *ngIf="form.get('unitOfMeasurement')?.invalid && form.get('unitOfMeasurement')?.touched" class="error-message">
         Campo obrigatório
       </div>
@@ -40,41 +39,39 @@
      <div [ngSwitch]="unitOfMeasurement.value">
       <div *ngSwitchCase="'lt'">
         <div class="ui-inputgroup">
-          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" [(ngModel)]="quantity" >
+          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" name="quantity"/>
           <span class="ui-inputgroup-addon">Lt.</span>
         </div>
       </div>
 
       <div *ngSwitchCase="'kg'">
         <div class="ui-inputgroup">
-          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" [(ngModel)]="quantity" />
+          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" name="quantity" />
           <span class="ui-inputgroup-addon">Kg.</span>
         </div>
       </div>
 
       <div *ngSwitchCase="'uni'">
         <div class="ui-inputgroup">
-          <input type="text" pInputText minlength="0" maxlength="3" inputId="quantity" formControlName="quantity" [(ngModel)]="quantity" pattern="[0-9]*">
+          <input type="text" pInputText minlength="0" inputId="quantity" formControlName="quantity" name="quantity" inputmode="numeric"
+            pattern="[0-9]*">
           <span class="ui-inputgroup-addon">Uni.</span>
         </div>
       </div>
 
       <div *ngSwitchCase="''">
         <div class="ui-inputgroup">
-          <input inputId="quantity" pInputText type="number" formControlName="quantity" [(ngModel)]="quantity" />
+           <input type="text" pInputText minlength="0" inputId="quantity" formControlName="quantity" name="quantity" inputmode="numeric"
+            pattern="[0-9]*">
         </div>
       </div>
-    </div>
-
-    <div *ngIf="form.get('quantity')?.invalid && form.get('quantity')?.touched" class="error-message">
-      Campo obrigatório
     </div>
   </div>
 
   <div class="flex flex-column gap-2">
     <label htmlFor="price">
     <span class="required-marker">*</span>Preço</label>
-    <p-inputMask mask="R$ 99999.99" placeholder="0.00" [slotChar]="'0'" formControlName="price" [(ngModel)]="price" ng2-mask="currency"></p-inputMask>
+    <p-inputNumber  mode="currency" currency="BRL" locale="pt-BR" formControlName="price" name="price" [required]="true"></p-inputNumber>
     <div *ngIf="form.get('price')?.invalid && form.get('price')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -83,8 +80,7 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="perishableProduct">
     <span class="required-marker">*</span>Produto Perecível</label>
-    <p-checkbox [binary]="true" inputId="perishableProduct" formControlName="perishableProduct"
-      [(ngModel)]="perishableProduct"></p-checkbox>
+    <p-checkbox [binary]="true" inputId="perishableProduct" formControlName="perishableProduct"></p-checkbox>
     <div *ngIf="form.get('perishableProduct')?.invalid && form.get('perishableProduct')?.touched" class="error-message">
       Campo obrigatório
     </div>
@@ -93,7 +89,7 @@
   <div class="flex flex-column gap-2">
     <label htmlFor="expirationDate">Data Validade</label>
     <p-calendar inputId="expirationDate" formControlName="expirationDate" name="expirationDate"
-        [showIcon]="true" [(ngModel)]="expirationDate" dateFormat="dd/mm/yy" (onSelect)="onDateSelect($event, 'expirationDate')"></p-calendar>
+        [showIcon]="true" dateFormat="dd/mm/yy" (onSelect)="onDateSelect()"></p-calendar>
     <div *ngIf="form.get('perishableProduct')?.value && form.get('expirationDate')?.invalid && form.get('expirationDate')?.touched"
       class="error-message">
         Campo obrigatório
@@ -105,12 +101,12 @@
     <label htmlFor="manufacturingDate">
     <span class="required-marker">*</span>Data Fabricação</label>
     <p-calendar formControlName="manufacturingDate" inputId="manufacturingDate" name="manufacturingDate"
-        [showIcon]="true" [(ngModel)]="manufacturingDate" dateFormat="dd/mm/yy" (onSelect)="onDateSelect($event, 'manufacturingDateControl')"></p-calendar>
+        [showIcon]="true" dateFormat="dd/mm/yy" (onSelect)="onDateSelect()"></p-calendar>
     <div *ngIf="form.get('manufacturingDate')?.invalid && form.get('manufacturingDate')?.touched" class="error-message">
       Campo obrigatório
     </div>
-    <div *ngIf="productOutOfDate && manufacturingDateInvalid" class="error-message">
-      Data de fabricação inválida
+    <div *ngIf="manufacturingDateInvalid" class="error-message">
+      Data de fabricação não pode ser maior que a data de validade.
     </div>
   </div>
 

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import * as moment from 'moment';
+import 'moment/locale/pt-br';
 
 interface UnitOfMeasurementOptions {
     name: string;
@@ -18,7 +19,6 @@ interface UnitOfMeasurementOptions {
 export class FormComponent implements OnInit{
   form: FormGroup;
   unitsOfMeasurementOption: UnitOfMeasurementOptions[] = [];
-
   urlId: number = 0;
   productOutOfDate: boolean = false;
   manufacturingDateInvalid: boolean = false;
@@ -33,7 +33,9 @@ export class FormComponent implements OnInit{
   manufacturingDate: string = '';
   deleteDate : string = '';
 
-  ngOnInit() {
+  public ngOnInit() {
+    moment.locale('pt-br');
+
     this.unitsOfMeasurementOption = [
       { name: 'Litro', value: 'lt' },
       { name: 'Quilograma', value: 'kg' },
@@ -42,6 +44,8 @@ export class FormComponent implements OnInit{
   }
 
   constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private messageService: MessageService) {
+    moment.locale('pt-br');
+
     this.form = this.formBuilder.group({
       id:[''],
       itemName: ['', Validators.required],
@@ -61,7 +65,6 @@ export class FormComponent implements OnInit{
       } else {
         this.form.get('expirationDate')?.clearValidators();
       }
-
       // Atualize as validações do campo "data de validade"
       this.form.get('expirationDate')?.updateValueAndValidity();
     });
@@ -79,25 +82,43 @@ export class FormComponent implements OnInit{
     const selectedItem = convertToJson.find((item: any) => item.id === parseInt(id, 10));
 
     if (selectedItem) {
-      this.id = selectedItem.id;
-      this.itemName = selectedItem.itemName;
       this.unitOfMeasurement = { name: selectedItem.unitOfMeasurement.name, value: selectedItem.unitOfMeasurement.value };
-      this.quantity = selectedItem.quantity;
-      this.price = selectedItem.price;
-      this.perishableProduct = selectedItem.perishableProduct;
-      this.expirationDate = selectedItem.expirationDate;
-      this.manufacturingDate = selectedItem.manufacturingDate;
-      this.deleteDate = selectedItem.deleteDate;
+      this.form.patchValue({
+        id: selectedItem.id,
+        itemName: selectedItem.itemName,
+        quantity: selectedItem.quantity,
+        price: selectedItem.price,
+        perishableProduct: selectedItem.perishableProduct,
+        expirationDate: selectedItem.expirationDate,
+        manufacturingDate: selectedItem.manufacturingDate,
+        deleteDate: selectedItem.deleteDate
+      });
     }
   }
 
   public saveForm() {
+    if (this.manufacturingDateInvalid) {
+      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Data de fabricação inválida!', life: 2000, closable: true });
+      return;
+    }
+
     if(this.form.valid){
       const data = this.form.value;
       const existingData = localStorage.getItem('registros');
       const records = existingData ? JSON.parse(existingData) : [];
 
-      if(!this.urlId){
+       if(this.urlId){
+        const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
+
+        data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY");
+        data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY");
+        data.deleteDate = '';
+
+        records[existingItemIndex] = data;
+        localStorage.setItem('registros', JSON.stringify(records));
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!', life: 2000, closable: true });
+
+      }else{
         let count = localStorage.getItem('contador');
         if (!count) {
           count = '0';
@@ -106,56 +127,47 @@ export class FormComponent implements OnInit{
         const newCount = parseInt(count) + 1;
 
         data.id = newCount;
-        data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY")
-        data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY")
+        data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY");
+        data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY");
         data.deleteDate = '';
 
         records.push(data);
 
         localStorage.setItem('registros', JSON.stringify(records));
         localStorage.setItem('contador', JSON.stringify(newCount));
-        this.form.reset();
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro adicionado com sucesso!' });
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro adicionado com sucesso!', life: 2000, closable: true });
+
+        setTimeout(() => {
+          this.form.reset();
+        }, 1000);
       }
-
-      if(this.urlId){
-        console.log(data)
-        const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
-        console.log(existingItemIndex)
-
-        records[existingItemIndex] = data;
-        localStorage.setItem('registros', JSON.stringify(records));
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!' });
-      }
-
-    } else {
+    }else{
       // verifica se os campos obrigatórios estão preenchidos
       this.form.markAllAsTouched();
     }
   }
 
-  public onDateSelect(event: Date,  nameField: string) {
-    if(nameField === 'expirationDate'){
-      const selectedDate = moment(event);
-      const currentDate = moment();
-      this.productOutOfDate = selectedDate.isBefore(currentDate);
-      console.log(this.productOutOfDate)
-    }
+  public onDateSelect() {
+    const selectedDate = moment(this.form.get('expirationDate')?.value).startOf("day");
+    const currentDate = moment();
+    this.productOutOfDate = selectedDate.isBefore(currentDate);
 
-    if (this.form.get('perishableProduct')?.value && this.productOutOfDate) {
-      this.checkManufacturingDate();
-    }
-  }
+    console.log(this.form.get('perishableProduct')?.value)
 
-  public checkManufacturingDate() {
-    if (this.manufacturingDate) {
-      const manufacturingDate = moment(this.manufacturingDate).startOf('day');
-      if (manufacturingDate.isAfter(moment(this.expirationDate).startOf('day'))) {
-        this.manufacturingDateInvalid = true;
-      } else {
-        this.manufacturingDateInvalid = false;
+    if (this.form.get('perishableProduct')?.value && this.form.get('expirationDate')?.value) {
+      const manufacturingDate = moment(this.form.get('manufacturingDate')?.value).startOf("day");
+      const expirationDate = moment(this.form.get('expirationDate')?.value).startOf("day");
+
+      if (manufacturingDate.isValid() && expirationDate.isValid()) {
+        if (manufacturingDate.isAfter(expirationDate)) {
+          this.manufacturingDateInvalid = true;
+        } else {
+          this.manufacturingDateInvalid = false;
+        }
       }
+    }else{
+      this.manufacturingDateInvalid = false;
     }
-  }
 
+  }
 }
