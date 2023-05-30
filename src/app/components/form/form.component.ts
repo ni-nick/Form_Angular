@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import { PrimeNGConfig } from 'primeng/api'
 import { MessageService } from 'primeng/api';
 import * as moment from 'moment';
-import 'moment/locale/pt-br';
+
+import { configurationLocale } from 'src/assets/configurationLocale';
 
 interface UnitOfMeasurementOptions {
     name: string;
@@ -34,7 +36,7 @@ export class FormComponent implements OnInit{
   deleteDate : string = '';
 
   public ngOnInit() {
-    moment.locale('pt-br');
+    configurationLocale(this.primengConfig)
 
     this.unitsOfMeasurementOption = [
       { name: 'Litro', value: 'lt' },
@@ -43,9 +45,7 @@ export class FormComponent implements OnInit{
     ];
   }
 
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private messageService: MessageService) {
-    moment.locale('pt-br');
-
+  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private messageService: MessageService, private primengConfig: PrimeNGConfig) {
     this.form = this.formBuilder.group({
       id:[''],
       itemName: ['', Validators.required],
@@ -59,18 +59,17 @@ export class FormComponent implements OnInit{
 
     this.form.get('perishableProduct')?.valueChanges.subscribe((value) => {
       this.perishableProduct = value;
-      // Defina a validação obrigatória para a data de validade com base no valor do campo "produto perecível"
-      if (this.perishableProduct) {
+
+      if (this.perishableProduct) { // Defina a validação obrigatória para a data de validade com base no valor do campo "produto perecível"
         this.form.get('expirationDate')?.setValidators(Validators.required);
       } else {
         this.form.get('expirationDate')?.clearValidators();
       }
-      // Atualize as validações do campo "data de validade"
       this.form.get('expirationDate')?.updateValueAndValidity();
     });
 
     this.route.params.subscribe(params => {
-      const id = params['id']; // Obtém o ID da URL
+      const id = params['id'];
       this.urlId = id;
       this.loadItemDataEdit(id);
     });
@@ -109,7 +108,6 @@ export class FormComponent implements OnInit{
 
        if(this.urlId){
         const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
-
         data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY");
         data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY");
         data.deleteDate = '';
@@ -125,14 +123,12 @@ export class FormComponent implements OnInit{
         }
 
         const newCount = parseInt(count) + 1;
-
         data.id = newCount;
         data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY");
         data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY");
         data.deleteDate = '';
 
         records.push(data);
-
         localStorage.setItem('registros', JSON.stringify(records));
         localStorage.setItem('contador', JSON.stringify(newCount));
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro adicionado com sucesso!', life: 2000, closable: true });
@@ -142,7 +138,6 @@ export class FormComponent implements OnInit{
         }, 1000);
       }
     }else{
-      // verifica se os campos obrigatórios estão preenchidos
       this.form.markAllAsTouched();
     }
   }
@@ -152,7 +147,6 @@ export class FormComponent implements OnInit{
     const currentDate = moment();
     this.productOutOfDate = selectedDate.isBefore(currentDate);
 
-    console.log(this.form.get('perishableProduct')?.value)
 
     if (this.form.get('perishableProduct')?.value && this.form.get('expirationDate')?.value) {
       const manufacturingDate = moment(this.form.get('manufacturingDate')?.value).startOf("day");
@@ -168,6 +162,5 @@ export class FormComponent implements OnInit{
     }else{
       this.manufacturingDateInvalid = false;
     }
-
   }
 }
