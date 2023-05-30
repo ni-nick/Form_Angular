@@ -51,7 +51,7 @@ export class FormComponent implements OnInit{
       itemName: ['', Validators.required],
       unitOfMeasurement: ['', Validators.required],
       quantity: [''],
-      price: ['', Validators.required],
+      price: [''],
       perishableProduct: [false, Validators.required],
       expirationDate: ['', Validators.required],
       manufacturingDate: ['', Validators.required],

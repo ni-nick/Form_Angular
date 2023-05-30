@@ -78,12 +78,8 @@
   </div>
 
   <div class="flex flex-column gap-2">
-    <label htmlFor="perishableProduct">
-    <span class="required-marker">*</span>Produto Perecível</label>
+    <label htmlFor="perishableProduct">Produto Perecível</label>
     <p-checkbox [binary]="true" inputId="perishableProduct" formControlName="perishableProduct"></p-checkbox>
-    <div *ngIf="form.get('perishableProduct')?.invalid && form.get('perishableProduct')?.touched" class="error-message">
-      Campo obrigatório
-    </div>
   </div>
 
   <div class="flex flex-column gap-2">
