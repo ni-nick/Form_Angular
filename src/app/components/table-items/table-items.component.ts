@@ -21,9 +21,7 @@ export class TableItemsComponent implements OnInit {
     convertToObject = this.convertToString(convertToObject);
 
     convertToObject = convertToObject.filter((item: any) => !item.deleteDate);
-    console.log(convertToObject)
     this.records = convertToObject;
-    console.log(convertToObject);
   }
 
   public deleteItem(item: any ){
