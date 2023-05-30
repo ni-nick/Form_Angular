@@ -109,10 +109,13 @@ export class FormComponent implements OnInit{
        if(this.urlId){
         const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
         data.deleteDate = '';
-        data.expirationDate = moment(data.expirationDate, 'DD/MM/YYYY', true).isValid()
-        ? moment(data.expirationDate).format("DD/MM/YYYY") : '';
-        data.manufacturingDate = moment(data.manufacturingDate, 'DD/MM/YYYY', true).isValid()
-        ? moment(data.manufacturingDate).format("DD/MM/YYYY") : '';
+        data.expirationDate = moment(data.expirationDate, 'DD/MM/YYYY').isValid()
+          ? moment(data.expirationDate, 'DD/MM/YYYY').format('DD/MM/YYYY')
+          : '';
+
+        data.manufacturingDate = moment(data.manufacturingDate, 'DD/MM/YYYY').isValid()
+          ? moment(data.manufacturingDate, 'DD/MM/YYYY').format('DD/MM/YYYY')
+          : '';
 
         records[existingItemIndex] = data;
         localStorage.setItem('registros', JSON.stringify(records));
