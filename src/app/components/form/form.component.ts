@@ -51,9 +51,9 @@ export class FormComponent implements OnInit{
       itemName: ['', Validators.required],
       unitOfMeasurement: ['', Validators.required],
       quantity: [''],
-      price: [''],
-      perishableProduct: [false, Validators.required],
-      expirationDate: ['', Validators.required],
+      price: ['', Validators.required],
+      perishableProduct: [false],
+      expirationDate: [''],
       manufacturingDate: ['', Validators.required],
     });
 
@@ -109,12 +109,17 @@ export class FormComponent implements OnInit{
        if(this.urlId){
         const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
         data.deleteDate = '';
+        data.expirationDate = moment(data.expirationDate, 'DD/MM/YYYY', true).isValid()
+        ? moment(data.expirationDate).format("DD/MM/YYYY") : '';
+        data.manufacturingDate = moment(data.manufacturingDate, 'DD/MM/YYYY', true).isValid()
+        ? moment(data.manufacturingDate).format("DD/MM/YYYY") : '';
 
         records[existingItemIndex] = data;
         localStorage.setItem('registros', JSON.stringify(records));
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Registro editado com sucesso!', life: 2000, closable: true });
 
       }else{
+        console.log(data)
         let count = localStorage.getItem('contador');
         if (!count) {
           count = '0';
@@ -122,7 +127,8 @@ export class FormComponent implements OnInit{
 
         const newCount = parseInt(count) + 1;
         data.id = newCount;
-        data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY");
+        data.expirationDate = moment(data.expirationDate, 'DD/MM/YYYY', true).isValid()
+        ? moment(data.expirationDate).format("DD/MM/YYYY") : '';
         data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY");
         data.deleteDate = '';
 
