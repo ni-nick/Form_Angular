@@ -108,8 +108,6 @@ export class FormComponent implements OnInit{
 
        if(this.urlId){
         const existingItemIndex = records.findIndex((item: any) => item.id === data.id);
-        data.expirationDate = moment(data.expirationDate).format("DD/MM/YYYY");
-        data.manufacturingDate = moment(data.manufacturingDate).format("DD/MM/YYYY");
         data.deleteDate = '';
 
         records[existingItemIndex] = data;
