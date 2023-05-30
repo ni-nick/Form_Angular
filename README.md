@@ -1,6 +1,8 @@
 # FormAngular
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.2.
+A aplicação foi desenvolvida utilizando o framework Angular e a linguagem TypeScript. O escopo do projeto envolve a criação de um formulário com funcionalidades de cadastro, listagem, edição e exclusão de registros. Neste contexto, não é feito uso de uma API para armazenar os registros, sendo todos eles salvos localmente no armazenamento do navegador (localStorage). Quando um usuário deseja remover um item, em vez de ser removido permanentemente, é atribuída uma data de deleção, resultando em um softDelete. O registro permanece no localStorage, mas não é exibido na tabela.
+
 
 ## Development server
 
